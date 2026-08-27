@@ -1,15 +1,36 @@
 import { z } from "zod";
 
-export const analyzeRequestSchema = z
+const languageSchema = z.enum(["en", "hi"]);
+
+const textAnalyzeRequestSchema = z
   .object({
     content: z
       .string()
       .trim()
       .min(3, "Please paste a message, email or link first.")
       .max(8_000, "Message must be 8,000 characters or fewer."),
-    language: z.enum(["en", "hi"]),
+    language: languageSchema,
   })
   .strict();
+
+const imageAnalyzeRequestSchema = z
+  .object({
+    image: z
+      .string()
+      .trim()
+      .min(1, "Image data is required.")
+      .max(5_600_000, "Image must be 4 MB or smaller.")
+      .regex(/^[A-Za-z0-9+/]+={0,2}$/, "Image data must be valid base64.")
+      .refine((value) => value.length % 4 === 0, "Image data must be valid base64."),
+    imageMimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+    language: languageSchema,
+  })
+  .strict();
+
+export const analyzeRequestSchema = z.union([
+  textAnalyzeRequestSchema,
+  imageAnalyzeRequestSchema,
+]);
 
 const conciseString = z.string().trim().min(1).max(500);
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ApiError } from "@google/genai";
 import {
+  analyzeImageWithAI,
   analyzeWithAI,
   GeminiConfigurationError,
   getGeminiModel,
@@ -145,25 +146,52 @@ export async function POST(request: Request) {
     );
   }
 
-  const { content, language } = requestResult.data;
-  const signals = analyzeSignals(content);
+  const analysisRequest = requestResult.data;
+  const { language } = analysisRequest;
+  const isImageRequest = "image" in analysisRequest;
+  const signals = isImageRequest ? null : analyzeSignals(analysisRequest.content);
 
   try {
     try {
-      const analysis = await analyzeWithAI(content, language, signals);
+      const analysis = isImageRequest
+        ? await analyzeImageWithAI(
+            analysisRequest.image,
+            analysisRequest.imageMimeType,
+            language,
+          )
+        : await analyzeWithAI(analysisRequest.content, language, signals!);
       const response: AnalysisResponse = { ...analysis, analysisSource: "ai" };
-      console.info("Analysis completed", { source: "gemini", model: getGeminiModel() });
+      console.info("Analysis completed", {
+        source: "gemini",
+        input: isImageRequest ? "image" : "text",
+        model: getGeminiModel(),
+      });
       return NextResponse.json(response);
     } catch (error) {
       const category = classifyGeminiError(error);
       if (isFallbackEligible(category)) {
         logAnalysisFailure(error);
+        if (isImageRequest) {
+          console.warn("Image analysis unavailable; text fallback required", {
+            source: "gemini",
+            category,
+            model: getGeminiModel(),
+          });
+          return NextResponse.json(
+            {
+              error: language === "hi"
+                ? "चित्र का विश्लेषण अभी उपलब्ध नहीं है। कृपया संदेश का टेक्स्ट पेस्ट करें।"
+                : "Image analysis is temporarily unavailable. Please paste the message text instead.",
+            },
+            { status: 503 },
+          );
+        }
         console.warn("Using deterministic fallback analysis", {
           source: "fallback",
           category,
           model: getGeminiModel(),
         });
-        const analysis = analyzeWithFallback(content, language, signals);
+        const analysis = analyzeWithFallback(analysisRequest.content, language, signals!);
         const response: AnalysisResponse = { ...analysis, analysisSource: "fallback" };
         return NextResponse.json(response);
       }
