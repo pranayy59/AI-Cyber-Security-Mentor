@@ -121,6 +121,7 @@ export function ResultCard({ result, language }: { result: AnalysisResponse; lan
                 {getCategoryIcon(result.category)}
                 <span>{result.category}</span>
               </p>
+              <p className="mt-2 text-sm leading-6 text-slate-400">{result.categoryDescription}</p>
             </div>
 
             <div className="rounded-2xl bg-slate-800/60 p-4">

@@ -12,13 +12,13 @@ Use exactly these classifications and matching score ranges:
 - SUSPICIOUS: 35-69
 - DANGEROUS: 70-100
 
-The score is a risk indicator, not a statistically calibrated probability. A URL alone is not enough to make content dangerous; consider context. For SAFE content, use category "None" and return no warning signs. For SUSPICIOUS content, explain what to verify independently. For DANGEROUS content, recommend not clicking links or sharing sensitive information and verifying through official channels.
+The score is a risk indicator, not a statistically calibrated probability. A URL alone is not enough to make content dangerous; consider context. For each identified scam category, provide categoryDescription as a 1-2 sentence plain-language explanation of what that scam type is and how it typically works in general. Keep it educational, generic to the category, understandable to a non-technical reader, and do not merely restate the specific message. For SAFE content, use category "None", provide a brief neutral categoryDescription such as "No scam pattern detected", and return no warning signs. For SUSPICIOUS content, explain what to verify independently. For DANGEROUS content, recommend not clicking links or sharing sensitive information and verifying through official channels.
 
 Never tell the user to visit a suspicious URL. Never claim that a URL was opened, visited, scanned, resolved, or verified. The system only sees the pasted text and local visible-characteristics signals. Keep every explanation concise and understandable.`;
 
 export function buildUserPrompt(content: string, language: Language, signals: ScamSignals) {
   const outputLanguage = language === "hi"
-    ? "Write category, summary, reasons, action, and warningSigns in simple, natural Hindi. Keep riskLevel in English. For SAFE content, category must be \"कोई नहीं\"."
+    ? "Write category, categoryDescription, summary, reasons, action, and warningSigns in simple, natural Hindi. Keep riskLevel in English. For SAFE content, category must be \"कोई नहीं\" and categoryDescription must be a brief neutral Hindi statement such as \"कोई धोखाधड़ी पैटर्न नहीं मिला\"."
     : "Write all user-facing values in simple English. For SAFE content, category must be \"None\".";
 
   return `${outputLanguage}
@@ -36,11 +36,12 @@ Return only JSON matching the required schema.`;
 export const ANALYSIS_JSON_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["riskLevel", "riskScore", "category", "summary", "reasons", "action", "warningSigns"],
+  required: ["riskLevel", "riskScore", "category", "categoryDescription", "summary", "reasons", "action", "warningSigns"],
   properties: {
     riskLevel: { type: "string", enum: ["SAFE", "SUSPICIOUS", "DANGEROUS"] },
     riskScore: { type: "integer", minimum: 0, maximum: 100 },
     category: { type: "string" },
+    categoryDescription: { type: "string" },
     summary: { type: "string" },
     reasons: { type: "array", minItems: 1, maxItems: 4, items: { type: "string" } },
     action: { type: "string" },

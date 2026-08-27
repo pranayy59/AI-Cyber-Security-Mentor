@@ -5,6 +5,7 @@ export interface AnalysisResult {
   riskLevel: RiskLevel;
   riskScore: number;
   category: string;
+  categoryDescription: string;
   summary: string;
   reasons: string[];
   action: string;

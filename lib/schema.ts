@@ -18,6 +18,7 @@ export const analysisSchema = z
     riskLevel: z.enum(["SAFE", "SUSPICIOUS", "DANGEROUS"]),
     riskScore: z.number().int().min(0).max(100),
     category: conciseString,
+    categoryDescription: conciseString,
     summary: conciseString,
     reasons: z.array(conciseString).min(1).max(4),
     action: conciseString,
@@ -32,6 +33,9 @@ export const analysisSchema = z
     }
     if (value.riskLevel === "SAFE" && value.warningSigns.length > 0) {
       ctx.addIssue({ code: "custom", path: ["warningSigns"], message: "Safe results cannot contain warning signs" });
+    }
+    if (value.riskLevel === "SAFE" && value.categoryDescription.trim().length === 0) {
+      ctx.addIssue({ code: "custom", path: ["categoryDescription"], message: "Safe results require a category description" });
     }
   });
 
