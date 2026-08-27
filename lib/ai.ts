@@ -1,15 +1,35 @@
 import "server-only";
 
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
+import { ApiError, GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { analysisSchema } from "@/lib/schema";
 import { ANALYSIS_JSON_SCHEMA, buildUserPrompt, SYSTEM_PROMPT } from "@/lib/prompts";
 import type { ScamSignals } from "@/lib/analyze-signals";
 import type { AnalysisResult, Language } from "@/types/analysis";
 
-export const DEFAULT_GEMINI_MODEL = "gemini-3.7-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
+
+const GEMINI_MODEL_CANDIDATES = [
+  DEFAULT_GEMINI_MODEL,
+  "gemini-2.5-flash",
+] as const;
+
+function getGeminiModelCandidates() {
+  const configuredModel = process.env.GEMINI_MODEL?.trim();
+  return [...new Set([
+    ...(configuredModel ? [configuredModel] : []),
+    ...GEMINI_MODEL_CANDIDATES,
+  ])];
+}
 
 export function getGeminiModel() {
-  return process.env.GEMINI_MODEL?.trim() || DEFAULT_GEMINI_MODEL;
+  return getGeminiModelCandidates()[0];
+}
+
+function isUnavailableModelError(error: unknown) {
+  return error instanceof ApiError && (
+    error.status === 404 ||
+    /not found|does not exist|invalid model/i.test(error.message)
+  );
 }
 
 export type UnverifiedAnalysisReason =
@@ -43,23 +63,42 @@ export async function analyzeWithAI(
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) throw new GeminiConfigurationError("missing_api_key");
 
-  const model = getGeminiModel();
   const ai = new GoogleGenAI({ apiKey });
-  const response = await ai.models.generateContent({
-    model,
-    contents: buildUserPrompt(content, language, signals),
-    config: {
-      systemInstruction: SYSTEM_PROMPT,
-      responseMimeType: "application/json",
-      responseJsonSchema: ANALYSIS_JSON_SCHEMA,
-      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-      maxOutputTokens: 2_048,
-      httpOptions: {
-        timeout: 45_000,
-        retryOptions: { attempts: 1 },
-      },
-    },
-  });
+  const modelCandidates = getGeminiModelCandidates();
+  let response: Awaited<ReturnType<typeof ai.models.generateContent>> | undefined;
+
+  for (const [index, model] of modelCandidates.entries()) {
+    const thinkingConfig = model.startsWith("gemini-2.5")
+      ? { thinkingBudget: 0 }
+      : { thinkingLevel: ThinkingLevel.LOW };
+
+    try {
+      response = await ai.models.generateContent({
+        model,
+        contents: buildUserPrompt(content, language, signals),
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          responseMimeType: "application/json",
+          responseJsonSchema: ANALYSIS_JSON_SCHEMA,
+          thinkingConfig,
+          maxOutputTokens: 2_048,
+          httpOptions: {
+            timeout: 90_000,
+            retryOptions: { attempts: 1 },
+          },
+        },
+      });
+      console.info("Gemini model request succeeded", { model });
+      break;
+    } catch (error) {
+      const hasNextCandidate = index < modelCandidates.length - 1;
+      if (!hasNextCandidate || !isUnavailableModelError(error)) throw error;
+    }
+  }
+
+  if (!response) {
+    throw new Error("No Gemini model candidate returned a response");
+  }
 
   const raw = response.text;
   if (!raw) {

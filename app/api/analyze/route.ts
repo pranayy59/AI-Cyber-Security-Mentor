@@ -54,8 +54,34 @@ function isFallbackEligible(category: AIErrorCategory) {
   return category === "quota" || category === "rate_limit" || category === "service" || category === "connection";
 }
 
+function redactSecrets(value: string) {
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  let safeValue = apiKey ? value.replaceAll(apiKey, "[REDACTED]") : value;
+  safeValue = safeValue.replace(/([?&]key=)[^&\s]+/gi, "$1[REDACTED]");
+  return safeValue;
+}
+
+function getDevelopmentErrorDetails(error: unknown) {
+  if (process.env.NODE_ENV !== "development" || !(error instanceof Error)) return undefined;
+
+  const cause = error.cause instanceof Error
+    ? {
+        name: error.cause.name,
+        message: redactSecrets(error.cause.message),
+        code: "code" in error.cause ? String(error.cause.code) : undefined,
+      }
+    : undefined;
+
+  return {
+    name: error.name,
+    message: redactSecrets(error.message),
+    cause,
+  };
+}
+
 function logAnalysisFailure(error: unknown) {
   const category = classifyGeminiError(error);
+  const developmentError = getDevelopmentErrorDetails(error);
 
   if (error instanceof GeminiConfigurationError) {
     console.error("Analysis request failed", {
@@ -64,6 +90,7 @@ function logAnalysisFailure(error: unknown) {
       reason: error.reason,
       envLocalRequired: true,
       model: getGeminiModel(),
+      error: developmentError,
     });
     return;
   }
@@ -74,6 +101,7 @@ function logAnalysisFailure(error: unknown) {
       category,
       status: error.status,
       model: getGeminiModel(),
+      error: developmentError,
     });
     return;
   }
@@ -85,6 +113,7 @@ function logAnalysisFailure(error: unknown) {
       reason: error.reason,
       validationIssues: error.validationIssues ?? null,
       model: getGeminiModel(),
+      error: developmentError,
     });
     return;
   }
@@ -94,6 +123,7 @@ function logAnalysisFailure(error: unknown) {
     category,
     name: error instanceof Error ? error.name : "UnknownError",
     model: getGeminiModel(),
+    error: developmentError,
     // Do not log arbitrary error messages: provider errors can contain
     // sensitive request details. Known Gemini errors are classified above.
   });

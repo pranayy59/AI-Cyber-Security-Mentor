@@ -94,6 +94,12 @@ button { cursor: pointer; }
 .animate-reveal { animation: reveal 420ms ease-out both; }
 @keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+.dangerous-card-pulse { animation: dangerous-card-pulse 700ms ease-out 2; }
+@keyframes dangerous-card-pulse {
+  0%, 100% { box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.5), 0 8px 10px -6px rgba(226, 232, 240, 0.5); }
+  50% { box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.5), 0 8px 10px -6px rgba(226, 232, 240, 0.5), 0 0 0 4px rgba(248, 113, 113, 0.16), 0 0 24px rgba(239, 68, 68, 0.14); }
+}
+
 @media (max-width: 639px) {
   .primary-button { width: 100%; }
   .trust-item { justify-content: flex-start; }

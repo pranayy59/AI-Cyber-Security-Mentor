@@ -62,10 +62,10 @@ Set these server-only variables in `.env.local`:
 
 ```text
 GEMINI_API_KEY=your_key_here
-GEMINI_MODEL=gemini-3.7-flash
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
-`GEMINI_MODEL` is optional; the application defaults to `gemini-3.7-flash`. Never use a `NEXT_PUBLIC_` prefix for the API key.
+`GEMINI_MODEL` is optional; the application defaults to `gemini-2.5-flash`. Never use a `NEXT_PUBLIC_` prefix for the API key.
 
 ## Checks
 

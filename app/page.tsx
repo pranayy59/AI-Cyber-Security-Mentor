@@ -9,6 +9,14 @@ export default function Home() {
       <div className="orb orb-two" aria-hidden="true" />
       <div className="relative mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
         <Header />
+
+        <section className="mx-auto -mt-4 mb-6 max-w-2xl rounded-2xl border border-blue-100 bg-white/70 px-4 py-3 text-center shadow-sm sm:-mt-6 sm:mb-8">
+          <h2 className="text-sm font-bold text-slate-800">How this works</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            Local rules detect concrete scam signals, then Gemini AI evaluates the full context. The result is cross-checked against a strict schema before it reaches you—not simply passed through from an LLM.
+          </p>
+        </section>
+
         <AnalyzerForm />
 
         <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-3 text-xs text-slate-500 sm:grid-cols-3">
