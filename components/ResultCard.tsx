@@ -1,0 +1,92 @@
+import { ArrowRight, Flag, Info, Tags } from "lucide-react";
+import { ActionCard } from "@/components/ActionCard";
+import { RiskBadge } from "@/components/RiskBadge";
+import type { AnalysisResponse, Language, RiskLevel } from "@/types/analysis";
+
+const scoreColor: Record<RiskLevel, string> = {
+  SAFE: "text-emerald-600",
+  SUSPICIOUS: "text-amber-600",
+  DANGEROUS: "text-red-600",
+};
+
+const barColor: Record<RiskLevel, string> = {
+  SAFE: "bg-emerald-500",
+  SUSPICIOUS: "bg-amber-500",
+  DANGEROUS: "bg-red-500",
+};
+
+export function ResultCard({ result, language }: { result: AnalysisResponse; language: Language }) {
+  const hi = language === "hi";
+  return (
+    <section className="animate-reveal mt-7" aria-live="polite" aria-label="Safety analysis result">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
+        <div className="p-6 sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{hi ? "जोखिम परिणाम" : "Risk verdict"}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <RiskBadge level={result.riskLevel} language={language} />
+                {result.analysisSource === "fallback" && (
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-500">
+                    {hi ? "डेमो फ़ॉलबैक सक्रिय" : "Demo fallback active"}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="sm:text-right">
+              <div className={`text-3xl font-bold tracking-tight ${scoreColor[result.riskLevel]}`}>
+                {result.riskScore}<span className="text-base font-semibold text-slate-400">/100</span>
+              </div>
+              <p className="mt-1 text-xs font-medium text-slate-500">{hi ? "जोखिम स्कोर" : "Risk score"}</p>
+            </div>
+          </div>
+
+          <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={result.riskScore} aria-valuemin={0} aria-valuemax={100} aria-label="Risk score">
+            <div className={`h-full rounded-full transition-all duration-700 ${barColor[result.riskLevel]}`} style={{ width: `${result.riskScore}%` }} />
+          </div>
+
+          <p className="mt-6 text-pretty text-lg font-semibold leading-8 text-slate-900 sm:text-xl">{result.summary}</p>
+
+          <div className="mt-7 grid gap-6 border-t border-slate-100 pt-7 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <h3 className="section-label"><Info aria-hidden="true" />{hi ? "यह जोखिम भरा क्यों हो सकता है" : "Why this may be risky"}</h3>
+              <ul className="mt-3 grid gap-2.5">
+                {result.reasons.map((reason) => (
+                  <li key={reason} className="flex gap-3 text-sm leading-6 text-slate-700">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                    {reason}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 p-4">
+              <h3 className="section-label"><Tags aria-hidden="true" />{hi ? "धोखाधड़ी का प्रकार" : "Scam category"}</h3>
+              <p className="mt-2 text-sm font-semibold text-slate-800">{result.category}</p>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 p-4">
+              <h3 className="section-label"><Flag aria-hidden="true" />{hi ? "चेतावनी संकेत" : "Warning signs"}</h3>
+              {result.warningSigns.length ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {result.warningSigns.map((sign) => <span key={sign} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">{sign}</span>)}
+                </div>
+              ) : <p className="mt-2 text-sm text-slate-600">{hi ? "कोई स्पष्ट चेतावनी संकेत नहीं मिला।" : "No clear warning signs detected."}</p>}
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-5">
+            <h3 className="section-label text-blue-800"><ArrowRight aria-hidden="true" />{hi ? "आपको क्या करना चाहिए" : "What you should do"}</h3>
+            <p className="mt-2 text-sm font-medium leading-6 text-blue-950">{result.action}</p>
+          </div>
+        </div>
+      </div>
+      {result.riskLevel === "DANGEROUS" && <ActionCard language={language} />}
+      <p className="mt-4 text-center text-xs leading-5 text-slate-500">
+        {hi
+          ? "यह आकलन संदेश और दिखाई देने वाली URL विशेषताओं पर आधारित है। गंतव्य वेबसाइट को खोला नहीं गया।"
+          : "This assessment is based on the message and visible URL characteristics. The destination website was not opened."}
+      </p>
+    </section>
+  );
+}
