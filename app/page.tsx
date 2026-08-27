@@ -10,24 +10,24 @@ export default function Home() {
       <div className="relative mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
         <Header />
 
-        <section className="mx-auto -mt-4 mb-6 max-w-2xl rounded-2xl border border-blue-100 bg-white/70 px-4 py-3 text-center shadow-sm sm:-mt-6 sm:mb-8">
-          <h2 className="text-sm font-bold text-slate-800">How this works</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600">
+        <section className="mx-auto -mt-4 mb-6 max-w-2xl rounded-2xl border border-blue-900/70 bg-slate-900/70 px-4 py-3 text-center shadow-sm shadow-black/20 sm:-mt-6 sm:mb-8">
+          <h2 className="text-sm font-bold text-slate-100">How this works</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-300">
             Local rules detect concrete scam signals, then Gemini AI evaluates the full context. The result is cross-checked against a strict schema before it reaches you—not simply passed through from an LLM.
           </p>
         </section>
 
         <AnalyzerForm />
 
-        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-3 text-xs text-slate-500 sm:grid-cols-3">
+        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-3 text-xs text-slate-400 sm:grid-cols-3">
           <span className="trust-item"><EyeOff aria-hidden="true" />Links are never opened</span>
           <span className="trust-item"><Lock aria-hidden="true" />No message database</span>
           <span className="trust-item"><ScanSearch aria-hidden="true" />Explainable checks</span>
         </div>
 
-        <footer className="mt-10 border-t border-slate-200/80 pt-6 text-center text-xs leading-5 text-slate-500">
+        <footer className="mt-10 border-t border-slate-800 pt-6 text-center text-xs leading-5 text-slate-400">
           <p>AI-assisted risk assessment. Always verify sensitive requests through official channels.</p>
-          <p className="mt-1 font-medium text-slate-600">This tool does not open or visit pasted links.</p>
+          <p className="mt-1 font-medium text-slate-300">This tool does not open or visit pasted links.</p>
         </footer>
       </div>
     </main>

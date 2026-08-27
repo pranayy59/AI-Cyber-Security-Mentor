@@ -71,15 +71,15 @@ export function AnalyzerForm() {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="rounded-3xl border border-white/90 bg-white/90 p-5 shadow-2xl shadow-blue-950/10 backdrop-blur sm:p-7" noValidate>
+      <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-5 shadow-2xl shadow-black/30 backdrop-blur sm:p-7" noValidate>
         <div className="flex items-end justify-between gap-4">
           <LanguageSelector value={language} onChange={(next) => { setLanguage(next); setError(null); }} disabled={loading} />
-          <span className={`text-xs tabular-nums ${content.length > 8_000 ? "font-semibold text-red-600" : "text-slate-400"}`}>
+          <span className={`text-xs tabular-nums ${content.length > 8_000 ? "font-semibold text-red-400" : "text-slate-400"}`}>
             {content.length.toLocaleString()}/8,000
           </span>
         </div>
 
-        <label htmlFor="content" className="mt-6 block text-sm font-semibold text-slate-800">{copy.label}</label>
+        <label htmlFor="content" className="mt-6 block text-sm font-semibold text-slate-200">{copy.label}</label>
         <textarea
           id="content"
           name="content"
@@ -91,13 +91,13 @@ export function AnalyzerForm() {
           maxLength={8_100}
           aria-describedby={error ? "form-error" : "privacy-note"}
           aria-invalid={Boolean(error)}
-          className="mt-2 w-full resize-y rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-4 text-base leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 w-full resize-y rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-4 text-base leading-7 text-slate-100 outline-none transition placeholder:text-slate-500 hover:border-slate-600 focus:border-blue-500 focus:bg-slate-950 focus:ring-4 focus:ring-blue-900/50 disabled:cursor-not-allowed disabled:opacity-70"
         />
 
-        {error && <div id="form-error" role="alert" className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</div>}
+        {error && <div id="form-error" role="alert" className="mt-3 rounded-xl border border-red-900/70 bg-red-950/40 px-4 py-3 text-sm font-medium text-red-300">{error}</div>}
 
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p id="privacy-note" className="flex max-w-md items-start gap-2 text-xs leading-5 text-slate-500">
+          <p id="privacy-note" className="flex max-w-md items-start gap-2 text-xs leading-5 text-slate-400">
             <EyeOff className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             {copy.privacy}
           </p>
@@ -106,7 +106,7 @@ export function AnalyzerForm() {
             {loading ? copy.loading : copy.button}
           </button>
         </div>
-        {loading && <p className="mt-4 text-center text-sm font-medium text-blue-700" role="status">{copy.loadingDetail}</p>}
+        {loading && <p className="mt-4 text-center text-sm font-medium text-blue-300" role="status">{copy.loadingDetail}</p>}
         <ExampleMessages language={language} onSelect={(value) => { setContent(value); setError(null); }} disabled={loading} />
       </form>
       {result && <ResultCard result={result} language={language} />}

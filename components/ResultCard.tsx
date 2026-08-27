@@ -20,9 +20,9 @@ import { RiskBadge } from "@/components/RiskBadge";
 import type { AnalysisResponse, Language, RiskLevel } from "@/types/analysis";
 
 const scoreColor: Record<RiskLevel, string> = {
-  SAFE: "text-emerald-600",
-  SUSPICIOUS: "text-amber-600",
-  DANGEROUS: "text-red-600",
+  SAFE: "text-emerald-400",
+  SUSPICIOUS: "text-amber-400",
+  DANGEROUS: "text-red-400",
 };
 
 const barColor: Record<RiskLevel, string> = {
@@ -33,7 +33,7 @@ const barColor: Record<RiskLevel, string> = {
 
 function getCategoryIcon(category: string) {
   const normalized = category.toLocaleLowerCase();
-  const iconClassName = "h-4 w-4 shrink-0 text-slate-600";
+  const iconClassName = "h-4 w-4 shrink-0 text-slate-400";
 
   if (normalized === "none" || normalized.includes("कोई नहीं")) return <ShieldCheck className={iconClassName} aria-hidden="true" />;
   if (/\b(?:bank|kyc)\b|बैंक|केवाईसी|खाता/i.test(normalized)) return <Landmark className={iconClassName} aria-hidden="true" />;
@@ -68,7 +68,7 @@ export function ResultCard({ result, language }: { result: AnalysisResponse; lan
 
   return (
     <section className="animate-reveal mt-7" aria-live="polite" aria-label="Safety analysis result">
-      <div className={`overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50 ${result.riskLevel === "DANGEROUS" ? "dangerous-card-pulse" : ""}`}>
+      <div className={`overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-900 shadow-xl shadow-black/30 ${result.riskLevel === "DANGEROUS" ? "dangerous-card-pulse" : ""}`}>
         <div className="p-6 sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -78,8 +78,8 @@ export function ResultCard({ result, language }: { result: AnalysisResponse; lan
                 <span
                   className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
                     result.analysisSource === "ai"
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      : "border-slate-200 bg-slate-50 text-slate-500"
+                      ? "border-emerald-800 bg-emerald-950/50 text-emerald-300"
+                      : "border-slate-700 bg-slate-800 text-slate-400"
                   }`}
                 >
                   {result.analysisSource === "ai"
@@ -96,18 +96,18 @@ export function ResultCard({ result, language }: { result: AnalysisResponse; lan
             </div>
           </div>
 
-          <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={result.riskScore} aria-valuemin={0} aria-valuemax={100} aria-label="Risk score">
+          <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-800" role="progressbar" aria-valuenow={result.riskScore} aria-valuemin={0} aria-valuemax={100} aria-label="Risk score">
             <div className={`h-full rounded-full transition-all duration-700 ${barColor[result.riskLevel]}`} style={{ width: `${result.riskScore}%` }} />
           </div>
 
-          <p className="mt-6 text-pretty text-lg font-semibold leading-8 text-slate-900 sm:text-xl">{result.summary}</p>
+          <p className="mt-6 text-pretty text-lg font-semibold leading-8 text-slate-100 sm:text-xl">{result.summary}</p>
 
-          <div className="mt-7 grid gap-6 border-t border-slate-100 pt-7 sm:grid-cols-2">
+          <div className="mt-7 grid gap-6 border-t border-slate-800 pt-7 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <h3 className="section-label"><Info aria-hidden="true" />{hi ? "यह जोखिम भरा क्यों हो सकता है" : "Why this may be risky"}</h3>
               <ul className="mt-3 grid gap-2.5">
                 {result.reasons.map((reason) => (
-                  <li key={reason} className="flex gap-3 text-sm leading-6 text-slate-700">
+                  <li key={reason} className="flex gap-3 text-sm leading-6 text-slate-300">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
                     {reason}
                   </li>
@@ -115,32 +115,32 @@ export function ResultCard({ result, language }: { result: AnalysisResponse; lan
               </ul>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="rounded-2xl bg-slate-800/60 p-4">
               <h3 className="section-label"><Tags aria-hidden="true" />{hi ? "धोखाधड़ी का प्रकार" : "Scam category"}</h3>
-              <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
                 {getCategoryIcon(result.category)}
                 <span>{result.category}</span>
               </p>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="rounded-2xl bg-slate-800/60 p-4">
               <h3 className="section-label"><Flag aria-hidden="true" />{hi ? "चेतावनी संकेत" : "Warning signs"}</h3>
               {result.warningSigns.length ? (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {result.warningSigns.map((sign) => <span key={sign} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">{sign}</span>)}
+                  {result.warningSigns.map((sign) => <span key={sign} className="rounded-full border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs font-medium text-slate-300">{sign}</span>)}
                 </div>
-              ) : <p className="mt-2 text-sm text-slate-600">{hi ? "कोई स्पष्ट चेतावनी संकेत नहीं मिला।" : "No clear warning signs detected."}</p>}
+              ) : <p className="mt-2 text-sm text-slate-300">{hi ? "कोई स्पष्ट चेतावनी संकेत नहीं मिला।" : "No clear warning signs detected."}</p>}
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-5">
-            <h3 className="section-label text-blue-800"><ArrowRight aria-hidden="true" />{hi ? "आपको क्या करना चाहिए" : "What you should do"}</h3>
-            <p className="mt-2 text-sm font-medium leading-6 text-blue-950">{result.action}</p>
+          <div className="mt-6 rounded-2xl border border-blue-800/70 bg-blue-950/40 p-5">
+            <h3 className="section-label text-blue-300"><ArrowRight aria-hidden="true" />{hi ? "आपको क्या करना चाहिए" : "What you should do"}</h3>
+            <p className="mt-2 text-sm font-medium leading-6 text-blue-100">{result.action}</p>
           </div>
         </div>
       </div>
       {result.riskLevel === "DANGEROUS" && <ActionCard language={language} />}
-      <p className="mt-4 text-center text-xs leading-5 text-slate-500">
+      <p className="mt-4 text-center text-xs leading-5 text-slate-400">
         {hi
           ? "यह आकलन संदेश और दिखाई देने वाली URL विशेषताओं पर आधारित है। गंतव्य वेबसाइट को खोला नहीं गया।"
           : "This assessment is based on the message and visible URL characteristics. The destination website was not opened."}

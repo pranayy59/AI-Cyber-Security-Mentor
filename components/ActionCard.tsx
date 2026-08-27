@@ -21,17 +21,17 @@ export function ActionCard({ language }: { language: Language }) {
       ];
 
   return (
-    <aside className="mt-5 rounded-2xl border border-red-200 bg-red-50/80 p-5 sm:p-6" aria-label="Immediate safety steps">
-      <h3 className="text-base font-bold text-red-900">{hi ? "अभी ये कदम उठाएं" : "Take these steps now"}</h3>
-      <ul className="mt-4 grid gap-3 text-sm leading-6 text-red-950">
+    <aside className="mt-5 rounded-2xl border border-red-900/70 bg-red-950/40 p-5 sm:p-6" aria-label="Immediate safety steps">
+      <h3 className="text-base font-bold text-red-300">{hi ? "अभी ये कदम उठाएं" : "Take these steps now"}</h3>
+      <ul className="mt-4 grid gap-3 text-sm leading-6 text-red-100">
         {items.map(([Icon, text]) => (
           <li key={text as string} className="flex items-start gap-3">
-            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-red-600" aria-hidden="true" />
+            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-red-400" aria-hidden="true" />
             <span>{text as string}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-4 border-t border-red-200 pt-4 text-xs leading-5 text-red-800">
+      <p className="mt-4 border-t border-red-900/70 pt-4 text-xs leading-5 text-red-300">
         {hi ? "भारत में: साइबर अपराध हेल्पलाइन " : "In India: cybercrime helpline "}
         <strong>{REPORTING.indiaCybercrimeHelpline}</strong>{" · "}
         <a className="font-semibold underline underline-offset-2" href={REPORTING.indiaCybercrimeUrl} target="_blank" rel="noreferrer">

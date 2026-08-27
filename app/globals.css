@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7faff;
-  --foreground: #0f172a;
+  --background: #0b1120;
+  --foreground: #e2e8f0;
 }
 
 * { box-sizing: border-box; }
@@ -12,7 +12,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background:
-    linear-gradient(180deg, rgba(239, 246, 255, 0.75), rgba(248, 250, 252, 0.94) 42%, #f8fafc),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(11, 17, 32, 0.96) 42%, #080d18),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-geist), Arial, sans-serif;
@@ -21,10 +21,10 @@ body {
 button, textarea { font: inherit; }
 button { cursor: pointer; }
 
-::selection { background: #bfdbfe; color: #172554; }
+::selection { background: #1d4ed8; color: #f8fafc; }
 
 .gradient-text {
-  background: linear-gradient(120deg, #2563eb, #0891b2);
+  background: linear-gradient(120deg, #60a5fa, #22d3ee);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -42,7 +42,7 @@ button { cursor: pointer; }
   left: -8rem;
   width: 28rem;
   height: 28rem;
-  background: radial-gradient(circle, rgba(147, 197, 253, 0.32), transparent 68%);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.22), transparent 68%);
 }
 
 .orb-two {
@@ -50,7 +50,7 @@ button { cursor: pointer; }
   right: -12rem;
   width: 32rem;
   height: 32rem;
-  background: radial-gradient(circle, rgba(103, 232, 249, 0.2), transparent 68%);
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.14), transparent 68%);
 }
 
 .primary-button {
@@ -79,7 +79,7 @@ button { cursor: pointer; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #475569;
+  color: #94a3b8;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -89,15 +89,15 @@ button { cursor: pointer; }
 .section-label svg { width: 0.9rem; height: 0.9rem; }
 
 .trust-item { display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
-.trust-item svg { width: 0.85rem; height: 0.85rem; color: #3b82f6; }
+.trust-item svg { width: 0.85rem; height: 0.85rem; color: #60a5fa; }
 
 .animate-reveal { animation: reveal 420ms ease-out both; }
 @keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .dangerous-card-pulse { animation: dangerous-card-pulse 700ms ease-out 2; }
 @keyframes dangerous-card-pulse {
-  0%, 100% { box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.5), 0 8px 10px -6px rgba(226, 232, 240, 0.5); }
-  50% { box-shadow: 0 20px 25px -5px rgba(226, 232, 240, 0.5), 0 8px 10px -6px rgba(226, 232, 240, 0.5), 0 0 0 4px rgba(248, 113, 113, 0.16), 0 0 24px rgba(239, 68, 68, 0.14); }
+  0%, 100% { box-shadow: 0 20px 25px -5px rgba(2, 6, 23, 0.55), 0 8px 10px -6px rgba(2, 6, 23, 0.5); }
+  50% { box-shadow: 0 20px 25px -5px rgba(2, 6, 23, 0.55), 0 8px 10px -6px rgba(2, 6, 23, 0.5), 0 0 0 4px rgba(248, 113, 113, 0.18), 0 0 24px rgba(239, 68, 68, 0.18); }
 }
 
 @media (max-width: 639px) {

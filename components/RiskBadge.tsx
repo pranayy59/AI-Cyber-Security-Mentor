@@ -2,9 +2,9 @@ import { CircleCheck, ShieldAlert, TriangleAlert } from "lucide-react";
 import type { Language, RiskLevel } from "@/types/analysis";
 
 const styles: Record<RiskLevel, string> = {
-  SAFE: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  SUSPICIOUS: "border-amber-200 bg-amber-50 text-amber-700",
-  DANGEROUS: "border-red-200 bg-red-50 text-red-700",
+  SAFE: "border-emerald-800 bg-emerald-950/50 text-emerald-300",
+  SUSPICIOUS: "border-amber-800 bg-amber-950/50 text-amber-300",
+  DANGEROUS: "border-red-800 bg-red-950/50 text-red-300",
 };
 
 const labels: Record<RiskLevel, Record<Language, string>> = {
